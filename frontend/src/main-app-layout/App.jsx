@@ -8,6 +8,8 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState('date');
 
   useEffect(() => {
     const loadTasks = async () => {
@@ -55,6 +57,17 @@ function App() {
     }
   };
 
+  const filteredTasks = tasks
+  .filter(t => t.title.toLowerCase().includes(searchTerm.toLowerCase()))
+  .sort((a, b) => {
+    const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+    if (sortBy === 'title') return a.title.localeCompare(b.title);
+    if (sortBy === 'priority') {
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    }
+    return new Date(b.createdAt) - new Date(a.createdAt);
+  });
+
   return (
     <div style={{ padding: '20px' }} className="main-container">
       <h1>Task Manager</h1>
@@ -69,8 +82,20 @@ function App() {
           <TaskForm onTaskCreated={handleCreateTask} />
           <div style={{ marginTop: '20px' }}>
             <h3>My Tasks ({tasks.length})</h3>
+             <div style={{ margin: '20px 0', display: 'flex', gap: '10px' }}>
+            <input 
+              placeholder="Search tasks..." 
+              onChange={(e) => setSearchTerm(e.target.value)} 
+              style={{ padding: '8px', borderRadius: '4px' }}
+            />
+            <select onChange={(e) => setSortBy(e.target.value)} style={{ padding: '8px' }}>
+              <option value="date">Sort by Date</option>
+              <option value="priority">Sort by Priority</option>
+              <option value="title">Sort by Title</option>
+            </select>
+          </div>
             <TaskCarousel 
-              tasks={tasks} 
+              tasks={filteredTasks} 
               onToggleStatus={handleToggle} 
               onDelete={handleDelete} 
             />
