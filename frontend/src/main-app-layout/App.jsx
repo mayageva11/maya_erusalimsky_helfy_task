@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
+import TaskForm from '../components/TaskForm';
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //loading task from the server when the app is up
   useEffect(() => {
     const loadTasks = async () => {
       try {
@@ -23,22 +23,32 @@ function App() {
     loadTasks();
   }, []);
 
-  return (
-    <div style={{ padding: '40px', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>🌱 Helfy Task Manager</h1>
+  const handleCreateTask = async (taskData) => {
+    try {
+      // שליחה לשרת
+      const newTask = await apiService.createTask(taskData);
       
-      {loading && <p>Loading tasks from server...</p>}
-      
-      {error && <p style={{ color: '#ef4444', fontWeight: 'bold' }}>{error}</p>}
-      
-      {!loading && !error && (
-        <div style={{ background: '#f3f4f6', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-          <p style={{ color: '#10b981', fontWeight: 'bold' }}>✓ Successfully connected to Backend (Port 4000)!</p>
-          <p>Current tasks in memory: <strong>{tasks.length}</strong></p>
-        </div>
-      )}
+      // עדכון הסטייט המקומי כדי שהרשימה תתעדכן מיד (בלי לרענן דף)
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    } catch (err) {
+      console.error('Failed to add task', err);
+      alert('Could not add task. Check the server!');
+    }
+  };
 
-      
+  return (
+    <div style={{ padding: '20px' }}>
+      <h1>Task Manager</h1>
+      <TaskForm onTaskCreated={handleCreateTask} />
+
+      {/* כאן בהמשך תהייה הקרוסלה */}
+      <div style={{ marginTop: '20px' }}>
+        <h3>My Tasks ({tasks.length})</h3>
+        {/* זמנית נציג פשוט רשימה כדי לראות שזה עובד */}
+        <ul>
+          {tasks.map(t => <li key={t.id}>{t.title}</li>)}
+        </ul>
+      </div>
     </div>
   );
 }
