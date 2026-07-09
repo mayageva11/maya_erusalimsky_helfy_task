@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const validateTask = require('../middleware/validateTask');
 
+if (typeof validateTask !== 'function') {
+    console.error('🚨 CRITICAL ERROR: validateTask middleware was not imported correctly! Check your file path.');
+}
 
 let tasks = [];
 
