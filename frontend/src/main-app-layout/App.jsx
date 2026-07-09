@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import TaskForm from '../components/TaskForm';
 import TaskCard from '../components/TaskCard';
+import TaskCarousel from '../components/TaskCarousel';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -60,20 +61,14 @@ function App() {
       <h1>Task Manager</h1>
       <TaskForm onTaskCreated={handleCreateTask} />
 
-      {/* כאן בהמשך תהייה הקרוסלה */}
       <div style={{ marginTop: '20px' }}>
         <h3>My Tasks ({tasks.length})</h3>
       
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '20px' }}>
-        {tasks.map(task => (
-            <TaskCard 
-              key={task.id} 
-              task={task} 
-              onToggleStatus={handleToggle} 
-              onDelete={handleDelete}      
-            />
-          ))}
-        </div>
+        <TaskCarousel 
+          tasks={tasks} 
+          onToggleStatus={handleToggle} 
+          onDelete={handleDelete} 
+        />
       </div>
     </div>
   );
