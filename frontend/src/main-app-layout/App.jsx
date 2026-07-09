@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { apiService } from '../services/api';
 import TaskForm from '../components/TaskForm';
-import TaskCard from '../components/TaskCard';
 import TaskCarousel from '../components/TaskCarousel';
+import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -27,10 +27,9 @@ function App() {
 
   const handleCreateTask = async (taskData) => {
     try {
-      // שליחה לשרת
+    
       const newTask = await apiService.createTask(taskData);
-      
-      // עדכון הסטייט המקומי כדי שהרשימה תתעדכן מיד (בלי לרענן דף)
+    
       setTasks((prevTasks) => [...prevTasks, newTask]);
     } catch (err) {
       console.error('Failed to add task', err);
@@ -57,19 +56,27 @@ function App() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: '20px' }} className="main-container">
       <h1>Task Manager</h1>
-      <TaskForm onTaskCreated={handleCreateTask} />
-
-      <div style={{ marginTop: '20px' }}>
-        <h3>My Tasks ({tasks.length})</h3>
-      
-        <TaskCarousel 
-          tasks={tasks} 
-          onToggleStatus={handleToggle} 
-          onDelete={handleDelete} 
-        />
-      </div>
+      {loading ? (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading tasks...</div>
+      ) : error ? (
+        <div style={{ color: 'red', textAlign: 'center', marginTop: '50px' }}>
+          <strong>Error:</strong> {error}
+        </div>
+      ) : (
+        <>
+          <TaskForm onTaskCreated={handleCreateTask} />
+          <div style={{ marginTop: '20px' }}>
+            <h3>My Tasks ({tasks.length})</h3>
+            <TaskCarousel 
+              tasks={tasks} 
+              onToggleStatus={handleToggle} 
+              onDelete={handleDelete} 
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
