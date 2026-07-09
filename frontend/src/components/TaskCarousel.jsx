@@ -15,7 +15,6 @@ function TaskCarousel({ tasks, onToggleStatus, onDelete }) {
       <button onClick={handlePrev} style={arrowStyle}>◀</button>
       
       <div style={displayStyle}>
-        {/* by index */}
         <TaskCard 
           task={tasks[currentIndex]} 
           onToggleStatus={onToggleStatus} 

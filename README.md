@@ -40,8 +40,8 @@ TaskFlow Manager provides a smooth interface for creating, tracking, and managin
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/taskflow-manager.git
-cd taskflow-manager
+git clone https://github.com/mayageva11/maya_erusalimsky_helfy_task.git
+cd helfy
 ```
 
 2. **Setup Backend:**
