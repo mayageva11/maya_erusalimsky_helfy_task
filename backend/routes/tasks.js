@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const validateTask = require('../middleware/validateTask');
 
 
 let tasks = [];
@@ -8,16 +9,12 @@ router.get('/', (req, res) => {
     res.status(200).json(tasks);
 });
 
-router.post('/', (req, res) => {
+router.post('/', validateTask, (req, res) => { 
     const { title, description, priority } = req.body;
-
-    if (!title || !priority) {
-        return res.status(400).json({ error: 'Title and priority are required' });
-    }
 
     const newTask = {
         id: Date.now(),
-        title,
+        title: title.trim(),
         description: description || '',
         completed: false,
         createdAt: new Date(),
@@ -29,7 +26,7 @@ router.post('/', (req, res) => {
 });
 
 
-router.put('/:id', (req, res) => {
+router.put('/:id', validateTask, (req, res) => { 
     const taskId = parseInt(req.params.id);
     const { title, description, priority, completed } = req.body;
 
@@ -40,9 +37,9 @@ router.put('/:id', (req, res) => {
 
     tasks[taskIndex] = {
         ...tasks[taskIndex],
-        title: title !== undefined ? title : tasks[taskIndex].title,
+        title: title.trim(),
         description: description !== undefined ? description : tasks[taskIndex].description,
-        priority: priority !== undefined ? priority : tasks[taskIndex].priority,
+        priority,
         completed: completed !== undefined ? completed : tasks[taskIndex].completed
     };
 
